@@ -1,0 +1,7 @@
+.venv
+.git
+.gitignore
+youtube_cookies.txt
+Downloads
+__pycache__
+*.pyc

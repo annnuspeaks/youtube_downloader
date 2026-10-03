@@ -1,7 +1,10 @@
 from pathlib import Path
+import os
+import shutil
 import threading
 import traceback
 import uuid
+import base64
 
 import imageio_ffmpeg
 import yt_dlp
@@ -12,12 +15,36 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 # ---------------------------------------------------------
-# Local Windows app configuration
+# Cross-platform application configuration
 # ---------------------------------------------------------
-BASE_DIR = Path(r"G:\YouTube_MP3")
-COOKIE_FILE = BASE_DIR / "youtube_cookies.txt"
-DENO_EXE = Path(r"C:\Users\annus\.deno\bin\deno.exe")
-FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Local:
+#   G:\YouTube_MP3\youtube_cookies.txt
+#
+# Cloud:
+#   COOKIE_FILE can be supplied through environment variable.
+COOKIE_FILE = Path(
+    os.getenv("COOKIE_FILE", str(BASE_DIR / "youtube_cookies.txt"))
+)
+
+# Cloud deployment:
+# Koyeb can provide the cookies file as a Base64 environment variable.
+COOKIE_B64 = os.getenv("YOUTUBE_COOKIES_B64")
+
+if COOKIE_B64 and not COOKIE_FILE.exists():
+    try:
+        COOKIE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        COOKIE_FILE.write_bytes(base64.b64decode(COOKIE_B64))
+    except Exception:
+        COOKIE_FILE = Path("/tmp/youtube_cookies.txt")
+        COOKIE_FILE.write_bytes(base64.b64decode(COOKIE_B64))
+
+# Local Windows Deno or cloud Linux Deno.
+DENO_PATH = os.getenv("DENO_PATH") or shutil.which("deno")
+DENO_EXE = Path(DENO_PATH) if DENO_PATH else None
+
+FRONTEND_DIR = BASE_DIR / "frontend"
 
 # Default is the user's normal Windows Downloads folder on C:.
 # BASE_DIR is still used for the YouTube cookie file.
@@ -36,8 +63,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 class URLRequest(BaseModel):
     url: str
+
 
 jobs = {}
 jobs_lock = threading.Lock()
@@ -57,7 +86,7 @@ def base_ydl_options():
         "ffmpeg_location": imageio_ffmpeg.get_ffmpeg_exe(),
         "js_runtimes": {
             "deno": {"path": str(DENO_EXE)}
-        } if DENO_EXE.exists() else {"deno": {}},
+        } if DENO_EXE and DENO_EXE.exists() else {"deno": {}},
     }
 
     if COOKIE_FILE.exists():
@@ -70,7 +99,7 @@ def base_ydl_options():
 def health():
     return {
         "status": "ok",
-        "deno": DENO_EXE.exists(),
+        "deno": bool(DENO_EXE and DENO_EXE.exists()),
         "cookies": COOKIE_FILE.exists(),
         "default_download_dir": str(DEFAULT_DOWNLOAD_DIR),
         "save_dir": str(current_download_dir),
