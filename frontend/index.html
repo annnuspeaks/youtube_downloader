@@ -1,0 +1,1407 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#070b18" />
+    <title>Velora • Nexora Media Utility</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/style.css?v=20261001-2" />
+
+    <style>
+      /* =========================================================
+       Velora × NEXORA — REDESIGNED SINGLE PAGE
+       Existing JS IDs intentionally preserved.
+       ========================================================= */
+
+      :root {
+        --nx-bg: #060a16;
+        --nx-surface: rgba(13, 20, 39, 0.78);
+        --nx-surface-2: rgba(18, 27, 50, 0.86);
+        --nx-line: rgba(150, 175, 220, 0.15);
+        --nx-text: #eef4ff;
+        --nx-muted: #91a0ba;
+        --nx-blue: #38bdf8;
+        --nx-violet: #7c5cff;
+        --nx-cyan: #22d3ee;
+        --nx-green: #20d49a;
+        --nx-shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background:
+          radial-gradient(
+            circle at 12% 8%,
+            rgba(91, 73, 255, 0.19),
+            transparent 30%
+          ),
+          radial-gradient(
+            circle at 88% 82%,
+            rgba(0, 203, 255, 0.12),
+            transparent 28%
+          ),
+          var(--nx-bg);
+        color: var(--nx-text);
+        min-height: 100vh;
+      }
+
+      .nx-page {
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+      }
+
+      .nx-page::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+          linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+          );
+        background-size: 42px 42px;
+        mask-image: linear-gradient(to bottom, black, transparent 78%);
+      }
+
+      .nx-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(8px);
+        pointer-events: none;
+        z-index: -1;
+      }
+      .nx-orb.a {
+        width: 360px;
+        height: 360px;
+        left: -170px;
+        top: 70px;
+        background: rgba(98, 78, 255, 0.16);
+      }
+      .nx-orb.b {
+        width: 420px;
+        height: 420px;
+        right: -220px;
+        top: 480px;
+        background: rgba(0, 195, 255, 0.11);
+      }
+
+      /* NAVBAR */
+      .nx-nav {
+        position: sticky;
+        top: 14px;
+        z-index: 1000;
+        width: min(1220px, calc(100% - 28px));
+        margin: 14px auto 0;
+        padding: 9px 12px;
+        border: 1px solid var(--nx-line);
+        border-radius: 20px;
+        background: rgba(7, 12, 27, 0.72);
+        backdrop-filter: blur(22px);
+        box-shadow: 0 14px 45px rgba(0, 0, 0, 0.25);
+      }
+
+      .nx-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none !important;
+        color: #fff !important;
+        min-width: 190px;
+      }
+      .nx-brand img {
+        width: 145px;
+        height: auto;
+        display: block;
+      }
+
+      .nx-nav-links {
+        gap: 4px;
+      }
+      .nx-nav-links .nav-link {
+        color: #9aa8c1 !important;
+        padding: 10px 13px !important;
+        border-radius: 11px;
+        font-size: 0.86rem;
+        font-weight: 650;
+        transition: 0.25s ease;
+      }
+      .nx-nav-links .nav-link:hover,
+      .nx-nav-links .nav-link.active {
+        color: #fff !important;
+        background: rgba(91, 108, 255, 0.12);
+      }
+
+      .nx-theme {
+        width: 44px;
+        height: 44px;
+        border: 1px solid var(--nx-line);
+        border-radius: 13px;
+        background: rgba(255, 255, 255, 0.045);
+        color: #e9efff;
+        display: grid;
+        place-items: center;
+        transition: 0.3s ease;
+        margin-left: 8px;
+      }
+      .nx-theme:hover {
+        transform: rotate(12deg) scale(1.06);
+        border-color: rgba(77, 197, 255, 0.55);
+        box-shadow: 0 0 25px rgba(53, 184, 255, 0.16);
+      }
+
+      /* HERO */
+      .nx-hero {
+        width: min(1220px, calc(100% - 28px));
+        margin: 0 auto;
+        min-height: 610px;
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        align-items: center;
+        gap: 50px;
+        padding: 70px 0 55px;
+      }
+
+      .nx-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 11px;
+        border: 1px solid rgba(111, 126, 255, 0.22);
+        border-radius: 999px;
+        background: rgba(95, 83, 255, 0.07);
+        color: #b8bfff;
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+      }
+      .nx-kicker i {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #38e8b2;
+        box-shadow: 0 0 12px #38e8b2;
+      }
+
+      .nx-hero h1 {
+        font-size: clamp(3rem, 6vw, 5.6rem);
+        line-height: 0.95;
+        letter-spacing: -0.055em;
+        font-weight: 850;
+        margin: 22px 0;
+        max-width: 780px;
+      }
+      .nx-gradient {
+        background: linear-gradient(100deg, #fff 10%, #9a8cff 48%, #42d5ff 85%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .nx-hero p {
+        color: var(--nx-muted);
+        font-size: 1.04rem;
+        line-height: 1.75;
+        max-width: 650px;
+      }
+
+      .nx-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin: 28px 0;
+      }
+      .nx-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 13px 18px;
+        border-radius: 13px;
+        text-decoration: none !important;
+        font-weight: 750;
+        border: 1px solid var(--nx-line);
+        transition: 0.3s ease;
+      }
+      .nx-btn.primary {
+        color: #fff !important;
+        border-color: transparent;
+        background: linear-gradient(110deg, #5848e8, #1faee9);
+        box-shadow: 0 13px 30px rgba(54, 91, 231, 0.22);
+      }
+      .nx-btn.primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 38px rgba(54, 91, 231, 0.35);
+      }
+      .nx-btn.secondary {
+        color: #dce5f7 !important;
+        background: rgba(255, 255, 255, 0.045);
+      }
+      .nx-btn.secondary:hover {
+        transform: translateY(-3px);
+        border-color: rgba(111, 193, 255, 0.35);
+        background: rgba(255, 255, 255, 0.075);
+      }
+
+      .nx-trust {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        color: #75849e;
+        font-size: 0.78rem;
+      }
+      .nx-trust span::before {
+        content: "✓";
+        color: #38d8ad;
+        margin-right: 6px;
+      }
+
+      /* VECTOR PLACEHOLDER */
+      .nx-visual {
+        min-height: 440px;
+        display: grid;
+        place-items: center;
+        position: relative;
+      }
+      .nx-vector {
+        width: min(430px, 90%);
+        aspect-ratio: 1/1;
+        position: relative;
+        display: grid;
+        place-items: center;
+      }
+      .nx-vector::before {
+        content: "";
+        position: absolute;
+        inset: 8%;
+        border-radius: 35%;
+        background:
+          radial-gradient(
+            circle at 35% 28%,
+            rgba(126, 91, 255, 0.34),
+            transparent 30%
+          ),
+          radial-gradient(
+            circle at 70% 70%,
+            rgba(32, 208, 255, 0.25),
+            transparent 34%
+          ),
+          rgba(16, 24, 48, 0.62);
+        border: 1px solid rgba(129, 150, 205, 0.16);
+        transform: rotate(8deg);
+        box-shadow:
+          inset 0 0 70px rgba(86, 80, 255, 0.06),
+          var(--nx-shadow);
+      }
+      .nx-vector-ring {
+        position: absolute;
+        inset: 3%;
+        border: 1px dashed rgba(90, 194, 255, 0.23);
+        border-radius: 38%;
+        transform: rotate(-12deg);
+        animation: nxSpin 18s linear infinite;
+      }
+      .nx-vector-card {
+        width: 57%;
+        aspect-ratio: 1/1;
+        border-radius: 28px;
+        position: relative;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(
+          145deg,
+          rgba(49, 55, 105, 0.8),
+          rgba(10, 18, 38, 0.94)
+        );
+        border: 1px solid rgba(150, 166, 230, 0.22);
+        box-shadow: 0 28px 65px rgba(0, 0, 0, 0.35);
+      }
+      .nx-vector-arrow {
+        width: 105px;
+        height: 105px;
+        border-radius: 28px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(145deg, #735fff, #1bbff0);
+        box-shadow: 0 0 55px rgba(62, 174, 255, 0.25);
+        animation: nxFloat 3.8s ease-in-out infinite;
+      }
+      .nx-vector-arrow svg {
+        width: 58px;
+        height: 58px;
+        fill: none;
+        stroke: #fff;
+        stroke-width: 6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .nx-vector-label {
+        position: absolute;
+        bottom: 23px;
+        font-size: 0.67rem;
+        letter-spacing: 0.18em;
+        color: #92a1bd;
+        font-weight: 800;
+      }
+      .nx-chip {
+        position: absolute;
+        padding: 8px 11px;
+        border-radius: 11px;
+        background: rgba(8, 14, 29, 0.86);
+        border: 1px solid rgba(125, 145, 205, 0.2);
+        color: #cbd7ed;
+        font-size: 0.68rem;
+        font-weight: 800;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        animation: nxFloat 4s ease-in-out infinite;
+      }
+      .nx-chip.one {
+        right: 3%;
+        top: 18%;
+      }
+      .nx-chip.two {
+        left: 2%;
+        bottom: 22%;
+        animation-delay: 1s;
+      }
+      .nx-chip.three {
+        right: 7%;
+        bottom: 12%;
+        animation-delay: 1.8s;
+      }
+
+      @keyframes nxFloat {
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      @keyframes nxSpin {
+        to {
+          transform: rotate(348deg);
+        }
+      }
+
+      /* DOWNLOAD WORKSPACE */
+      .nx-section {
+        width: min(1220px, calc(100% - 28px));
+        margin: 0 auto;
+        padding: 35px 0 80px;
+      }
+      .nx-section-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 25px;
+        margin-bottom: 20px;
+      }
+      .nx-section-label {
+        color: #7787a5;
+        font-size: 0.68rem;
+        font-weight: 850;
+        letter-spacing: 0.14em;
+      }
+      .nx-section h2 {
+        font-size: clamp(1.7rem, 3vw, 2.55rem);
+        letter-spacing: -0.035em;
+        margin: 7px 0;
+      }
+      .nx-section-sub {
+        color: var(--nx-muted);
+        max-width: 620px;
+        margin: 0;
+        line-height: 1.65;
+      }
+      .nx-live {
+        padding: 8px 11px;
+        border-radius: 999px;
+        border: 1px solid rgba(45, 220, 164, 0.18);
+        background: rgba(31, 205, 150, 0.06);
+        color: #73e7bd;
+        font-size: 0.72rem;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+      .nx-live i {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #32e4a7;
+        box-shadow: 0 0 10px #32e4a7;
+        margin-right: 7px;
+      }
+
+      .nx-shell {
+        padding: 18px;
+        border: 1px solid var(--nx-line);
+        border-radius: 24px;
+        background: linear-gradient(
+          145deg,
+          rgba(15, 24, 46, 0.84),
+          rgba(9, 15, 31, 0.9)
+        );
+        box-shadow: var(--nx-shadow);
+      }
+      .nx-url {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        overflow: hidden;
+        border: 1px solid rgba(139, 159, 204, 0.17);
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.045);
+      }
+      .nx-url-prefix {
+        width: 54px;
+        display: grid;
+        place-items: center;
+        color: #8f9eb9;
+        border-right: 1px solid rgba(139, 159, 204, 0.12);
+      }
+      .nx-url input {
+        flex: 1;
+        min-width: 0;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: #e8effc;
+        padding: 15px;
+      }
+      .nx-url input::placeholder {
+        color: #6f7f9a;
+      }
+      .nx-fetch {
+        border: 0;
+        color: #fff;
+        font-weight: 800;
+        padding: 15px 21px;
+        background: linear-gradient(110deg, #5949e8, #1faee9);
+        min-width: 145px;
+      }
+
+      /* Preserve functionality IDs */
+      #result .video-card {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: 330px 1fr;
+        gap: 22px;
+        padding: 18px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.035);
+        border: 1px solid rgba(140, 160, 205, 0.13);
+      }
+      #thumbnail {
+        width: 100%;
+        height: 205px;
+        object-fit: cover;
+        border-radius: 16px;
+      }
+      #result .video-info h3 {
+        font-size: 1.35rem;
+        margin: 4px 0 7px;
+      }
+      #result .meta {
+        color: #7f8ea9;
+        font-size: 0.85rem;
+        margin-bottom: 18px;
+      }
+      #result .control-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 13px;
+      }
+      #result .form-label {
+        color: #8494b0;
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+      }
+      #result .form-select {
+        background: #111c31;
+        color: #dfe8f7;
+        border-color: #263651;
+        border-radius: 11px;
+        padding: 11px 12px;
+      }
+      #downloadBtn {
+        width: 100%;
+        margin-top: 15px;
+        border: 0;
+        border-radius: 12px;
+        padding: 12px;
+        background: linear-gradient(110deg, #157c65, #20a77d);
+        color: #fff;
+        font-weight: 800;
+      }
+      #progressPanel {
+        border: 1px solid rgba(95, 195, 255, 0.14);
+        background: rgba(41, 104, 140, 0.07);
+        padding: 13px;
+        border-radius: 13px;
+      }
+      #progressBar {
+        transition: width 0.35s ease;
+      }
+
+      /* ROADMAP / PRODUCTS */
+      .nx-products {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+      .nx-product {
+        position: relative;
+        min-height: 142px;
+        padding: 20px;
+        border-radius: 18px;
+        border: 1px solid rgba(137, 157, 205, 0.13);
+        background: rgba(255, 255, 255, 0.032);
+        transition: 0.35s ease;
+        overflow: hidden;
+      }
+      .nx-product:hover {
+        transform: translateY(-6px);
+        border-color: rgba(82, 195, 255, 0.3);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+      }
+      .nx-product-icon {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        font-weight: 900;
+        color: #fff;
+        background: linear-gradient(145deg, #5e50e9, #1eafd9);
+      }
+      .nx-product h3 {
+        font-size: 1rem;
+        margin: 0 0 5px;
+      }
+      .nx-product p {
+        font-size: 0.76rem;
+        color: #7788a5;
+        margin: 0;
+        line-height: 1.5;
+      }
+      .nx-product-status {
+        position: absolute;
+        right: 14px;
+        top: 14px;
+        font-size: 0.58rem;
+        letter-spacing: 0.1em;
+        font-weight: 900;
+        color: #687995;
+      }
+      .nx-product.live .nx-product-status {
+        color: #54ddb0;
+      }
+
+      /* COLLEGE PROJECT — separate featured treatment */
+      .nx-college {
+        margin-top: 18px;
+        position: relative;
+        padding: 1px;
+        border-radius: 22px;
+        background: linear-gradient(
+          120deg,
+          rgba(124, 92, 255, 0.55),
+          rgba(42, 210, 255, 0.6),
+          rgba(124, 92, 255, 0.55)
+        );
+        background-size: 200% 100%;
+        animation: nxBorderFlow 6s linear infinite;
+        overflow: hidden;
+      }
+      .nx-college-inner {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 18px;
+        padding: 21px 23px;
+        border-radius: 21px;
+        background:
+          radial-gradient(
+            circle at 10% 50%,
+            rgba(112, 81, 255, 0.14),
+            transparent 32%
+          ),
+          #0a1123;
+      }
+      .nx-college-mark {
+        width: 56px;
+        height: 56px;
+        border-radius: 17px;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        font-size: 1.25rem;
+        background: linear-gradient(145deg, #765bff, #22c7f1);
+        box-shadow: 0 0 30px rgba(79, 170, 255, 0.2);
+        animation: nxCollegeFloat 3s ease-in-out infinite;
+      }
+      .nx-college-eyebrow {
+        font-size: 0.61rem;
+        letter-spacing: 0.16em;
+        font-weight: 900;
+        color: #8c9bc0;
+        margin-bottom: 5px;
+      }
+      .nx-college-title {
+        font-size: 1.06rem;
+        font-weight: 850;
+        margin: 0;
+        color: #f0f5ff;
+      }
+      .nx-college-desc {
+        color: #71819e;
+        font-size: 0.73rem;
+        margin: 5px 0 0;
+      }
+      .nx-college-tag {
+        padding: 8px 11px;
+        border-radius: 999px;
+        border: 1px solid rgba(104, 201, 255, 0.27);
+        color: #aeeaff;
+        background: rgba(45, 179, 239, 0.07);
+        font-size: 0.6rem;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        white-space: nowrap;
+      }
+      .nx-college:hover .nx-college-inner {
+        background:
+          radial-gradient(
+            circle at 10% 50%,
+            rgba(112, 81, 255, 0.22),
+            transparent 32%
+          ),
+          #0c1429;
+      }
+      .nx-college:hover .nx-college-mark {
+        transform: translateY(-4px) rotate(-3deg);
+        box-shadow: 0 0 40px rgba(79, 170, 255, 0.34);
+      }
+      @keyframes nxBorderFlow {
+        to {
+          background-position: 200% 0;
+        }
+      }
+      @keyframes nxCollegeFloat {
+        50% {
+          transform: translateY(-5px);
+        }
+      }
+
+      /* FOOTER */
+      .nx-footer {
+        border-top: 1px solid rgba(145, 165, 210, 0.12);
+        background: rgba(4, 8, 18, 0.78);
+        padding: 48px 0 18px;
+      }
+      .nx-footer-grid {
+        width: min(1220px, calc(100% - 28px));
+        margin: auto;
+        display: grid;
+        grid-template-columns: 1.35fr 0.8fr 1fr 0.9fr;
+        gap: 35px;
+      }
+      .nx-footer-brand img {
+        width: 145px;
+        margin-bottom: 15px;
+      }
+      .nx-footer-brand p {
+        color: #74849f;
+        font-size: 0.78rem;
+        line-height: 1.7;
+        max-width: 280px;
+      }
+      .nx-footer h4 {
+        font-size: 0.73rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #8796b2;
+        margin: 5px 0 15px;
+      }
+      .nx-footer a {
+        display: block;
+        color: #71809b;
+        text-decoration: none !important;
+        font-size: 0.78rem;
+        margin: 9px 0;
+        transition: 0.25s ease;
+      }
+      .nx-footer a:hover {
+        color: #e7efff;
+        transform: translateX(4px);
+      }
+      .nx-footer .nx-college-link {
+        color: #b6bff5;
+        font-weight: 800;
+        position: relative;
+      }
+
+      .nx-connect-icons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 5px;
+      }
+      .nx-connect-icon {
+        width: 43px;
+        height: 43px;
+        display: grid;
+        place-items: center;
+        border-radius: 13px;
+        border: 1px solid rgba(140, 160, 210, 0.16);
+        background: rgba(255, 255, 255, 0.035);
+        color: #aab8d0;
+        text-decoration: none !important;
+        transition: 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+      .nx-connect-icon svg {
+        width: 25px;
+        height: 25px;
+        position: relative;
+        z-index: 2;
+      }
+      .nx-connect-icon::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(124, 92, 255, 0.32),
+          rgba(34, 211, 238, 0.25)
+        );
+        transform: translateY(100%);
+        transition: 0.35s ease;
+      }
+      .nx-connect-icon:hover {
+        color: #fff;
+        transform: translateY(-7px) rotate(-2deg);
+        border-color: rgba(84, 201, 255, 0.48);
+        box-shadow: 0 12px 28px rgba(23, 141, 205, 0.16);
+      }
+      .nx-connect-icon:hover::before {
+        transform: translateY(0);
+      }
+
+      .nx-footer-bottom {
+        width: min(1220px, calc(100% - 28px));
+        margin: 35px auto 0;
+        padding-top: 17px;
+        border-top: 1px solid rgba(145, 165, 210, 0.09);
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        color: #53617a;
+        font-size: 0.68rem;
+      }
+
+      @media (max-width: 991px) {
+        .nx-hero {
+          grid-template-columns: 1fr;
+          padding-top: 55px;
+        }
+        .nx-visual {
+          min-height: 350px;
+        }
+        .nx-products {
+          grid-template-columns: 1fr 1fr;
+        }
+        .nx-footer-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .nx-brand {
+          min-width: auto;
+        }
+      }
+      @media (max-width: 700px) {
+        .nx-nav {
+          top: 7px;
+        }
+        .nx-hero {
+          padding-top: 45px;
+        }
+        .nx-hero h1 {
+          font-size: 3.2rem;
+        }
+        .nx-section-head {
+          display: block;
+        }
+        .nx-live {
+          display: inline-block;
+          margin-top: 12px;
+        }
+        .nx-url {
+          display: block;
+        }
+        .nx-url-prefix {
+          display: none;
+        }
+        .nx-url input {
+          width: 100%;
+        }
+        .nx-fetch {
+          width: 100%;
+        }
+        #result .video-card {
+          grid-template-columns: 1fr;
+        }
+        #result .control-grid {
+          grid-template-columns: 1fr;
+        }
+        .nx-products {
+          grid-template-columns: 1fr;
+        }
+        .nx-college-inner {
+          grid-template-columns: auto 1fr;
+        }
+        .nx-college-tag {
+          grid-column: 2;
+          justify-self: start;
+        }
+        .nx-footer-grid {
+          grid-template-columns: 1fr;
+        }
+        .nx-footer-bottom {
+          display: block;
+        }
+        .nx-footer-bottom span {
+          display: block;
+          margin: 7px 0;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="nx-page">
+      <div class="nx-orb a"></div>
+      <div class="nx-orb b"></div>
+
+      <!-- NAVBAR -->
+      <nav class="navbar navbar-expand-lg nx-nav">
+        <div class="container-fluid">
+          <a class="nx-brand" href="#home" aria-label="Velora">
+            <img src="/static/assets/velora-logo.png" alt="Velora" />
+          </a>
+
+          <button
+            class="navbar-toggler nav-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNav"
+            aria-controls="mainNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav mx-auto nx-nav-links">
+              <li class="nav-item">
+                <a class="nav-link active" href="#downloader">YT Download</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#platforms">IG Download</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#platforms">FB Download</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#about">About</a>
+              </li>
+            </ul>
+
+            <!-- Existing JS-compatible IDs -->
+            <button
+              id="themeToggle"
+              class="nx-theme"
+              type="button"
+              aria-label="Toggle theme"
+              title="Toggle theme"
+            >
+              <span id="themeIcon">☾</span>
+              <span id="themeText" class="d-none">Dark</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- HERO -->
+      <main id="home">
+        <section class="nx-hero">
+          <div>
+            <div class="nx-kicker">
+              <i></i> NEXORA UTILITY • MEDIA WORKSPACE
+            </div>
+
+            <h1>
+              Your media.<br />
+              <span class="nx-gradient">Your way.</span>
+            </h1>
+
+            <p>
+              <strong>Velora</strong> is a local-first media downloader built
+              inside the Nexora ecosystem. Fetch, convert and save supported
+              media through one clean workspace — with live progress and no
+              unnecessary clutter.
+            </p>
+
+            <div class="nx-actions">
+              <a class="nx-btn primary" href="#downloader">
+                Start Downloading <span>↗</span>
+              </a>
+              <a class="nx-btn secondary" href="#platforms">
+                Explore Platforms
+              </a>
+            </div>
+
+            <div class="nx-trust">
+              <span>Local-first</span>
+              <span>MP3 / M4A / MP4</span>
+              <span>Live progress</span>
+            </div>
+          </div>
+
+          <!-- Flat-vector style placeholder -->
+          <div
+            class="nx-visual"
+            aria-label="Media downloader vector illustration"
+          >
+            <div class="nx-vector">
+              <div class="nx-vector-ring"></div>
+              <div class="nx-vector-card">
+                <div class="nx-vector-arrow">
+                  <svg viewBox="0 0 64 64">
+                    <path d="M32 8v31"></path>
+                    <path d="M20 29l12 12 12-12"></path>
+                    <path d="M13 49h38"></path>
+                  </svg>
+                </div>
+                <div class="nx-vector-label">DOWNLOAD / CONVERT</div>
+              </div>
+              <div class="nx-chip one">YOUTUBE</div>
+              <div class="nx-chip two">MP4</div>
+              <div class="nx-chip three">MP3 · M4A</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- DOWNLOADER -->
+        <section class="nx-section" id="downloader">
+          <div class="nx-section-head">
+            <div>
+              <div class="nx-section-label">01 • YOUTUBE DOWNLOAD</div>
+              <h2>One clean download workspace.</h2>
+              <p class="nx-section-sub">
+                Paste a YouTube URL, fetch its details, choose your output and
+                download locally.
+              </p>
+            </div>
+            <div class="nx-live"><i></i> YouTube adapter active</div>
+          </div>
+
+          <div class="nx-shell">
+            <div class="nx-url">
+              <div class="nx-url-prefix">↗</div>
+              <input
+                id="urlInput"
+                type="url"
+                autocomplete="off"
+                placeholder="Paste a YouTube URL here…"
+              />
+              <button id="fetchBtn" class="nx-fetch" type="button">
+                Fetch Details <span>→</span>
+              </button>
+            </div>
+
+            <div id="status" class="status mt-3 d-none"></div>
+
+            <div id="result" class="d-none mt-4">
+              <div class="video-card">
+                <div class="video-media">
+                  <img id="thumbnail" class="thumb" alt="Video thumbnail" />
+                  <div class="media-badge">VIDEO INFO</div>
+                </div>
+
+                <div class="video-info">
+                  <div class="small-label">SELECTED MEDIA</div>
+                  <h3 id="title"></h3>
+                  <div id="meta" class="meta"></div>
+
+                  <div class="download-choice-head">
+                    <span class="form-label">DOWNLOAD METHOD</span>
+                    <span id="methodHint" class="method-hint"
+                      >Direct source = fastest</span
+                    >
+                  </div>
+
+                  <div
+                    class="download-methods"
+                    role="radiogroup"
+                    aria-label="Download method"
+                  >
+                    <label class="method-option active">
+                      <input
+                        type="radio"
+                        name="downloadMode"
+                        value="direct"
+                        checked
+                      />
+                      <span class="method-dot"></span>
+                      <span
+                        ><strong>Direct Download</strong
+                        ><small
+                          >Use the selected YouTube source without
+                          conversion</small
+                        ></span
+                      >
+                    </label>
+                    <label class="method-option">
+                      <input type="radio" name="downloadMode" value="convert" />
+                      <span class="method-dot"></span>
+                      <span
+                        ><strong>Convert</strong
+                        ><small
+                          >Use FFmpeg only when you need MP3 / M4A / MP4
+                          conversion</small
+                        ></span
+                      >
+                    </label>
+                  </div>
+
+                  <div id="directPanel" class="format-panel">
+                    <label class="form-label">AVAILABLE SOURCE FORMATS</label>
+                    <div
+                      id="sourceSelect"
+                      class="format-radio-list"
+                      role="radiogroup"
+                      aria-label="Available source formats"
+                    >
+                      <div class="format-empty">
+                        Fetch a video to see available formats.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="convertPanel" class="format-panel d-none">
+                    <label class="form-label" for="formatSelect"
+                      >DESIRED OUTPUT FORMAT</label
+                    >
+                    <select id="formatSelect" class="form-select">
+                      <option value="mp3">MP3 • 192 kbps</option>
+                      <option value="m4a">M4A • best available</option>
+                      <option value="mp4">MP4 • best video + audio</option>
+                    </select>
+                    <div id="conversionHint" class="conversion-hint">
+                      FFmpeg conversion will be used only in this mode.
+                    </div>
+                  </div>
+
+                  <button id="downloadBtn" class="download-btn" type="button">
+                    <span>↓</span> Download Selected Media
+                  </button>
+
+                  <div id="progressPanel" class="progress-panel d-none mt-3">
+                    <div
+                      class="d-flex justify-content-between align-items-center mb-2"
+                    >
+                      <span id="progressStage" class="progress-stage"
+                        >Preparing…</span
+                      >
+                      <strong id="progressPercent">0%</strong>
+                    </div>
+                    <div class="progress-track">
+                      <div
+                        id="progressBar"
+                        class="progress-bar-custom"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                    <div
+                      class="d-flex justify-content-between mt-2 progress-details"
+                    >
+                      <span id="progressTransferred">0 MB</span>
+                      <span id="progressSpeed">—</span>
+                      <span id="progressEta">ETA —</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="save-note save-location-row">
+              <span>▣</span>
+              <span
+                >Save to
+                <strong id="saveLocation"
+                  >G:\YouTube_MP3\Downloads</strong
+                ></span
+              >
+              <button
+                id="changeFolderBtn"
+                class="change-folder-btn"
+                type="button"
+              >
+                Change folder
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- PLATFORM / PRODUCTS -->
+        <section class="nx-section" id="platforms">
+          <div class="nx-section-head">
+            <div>
+              <div class="nx-section-label">02 • NEXORA ECOSYSTEM</div>
+              <h2>One workspace. More possibilities.</h2>
+              <p class="nx-section-sub">
+                Velora is designed as one utility inside a larger ecosystem of
+                practical AI, data and automation products.
+              </p>
+            </div>
+          </div>
+
+          <div class="nx-products">
+            <div class="nx-product live">
+              <div class="nx-product-icon">▶</div>
+              <div class="nx-product-status">LIVE</div>
+              <h3>Velora</h3>
+              <p>Local media downloading and conversion workspace.</p>
+            </div>
+
+            <div class="nx-product">
+              <div class="nx-product-icon">◎</div>
+              <div class="nx-product-status">ROADMAP</div>
+              <h3>Instagram Download</h3>
+              <p>Planned social-media adapter for the same workspace.</p>
+            </div>
+
+            <div class="nx-product">
+              <div class="nx-product-icon">f</div>
+              <div class="nx-product-status">ROADMAP</div>
+              <h3>Facebook Download</h3>
+              <p>Planned adapter while keeping the same Velora experience.</p>
+            </div>
+
+            <div class="nx-product">
+              <div class="nx-product-icon">F</div>
+              <div class="nx-product-status">PRODUCT</div>
+              <h3>FraudMatrix</h3>
+              <p>Fraud intelligence and detection focused product.</p>
+            </div>
+
+            <div class="nx-product">
+              <div class="nx-product-icon">C</div>
+              <div class="nx-product-status">PRODUCT</div>
+              <h3>ChurnMatrix</h3>
+              <p>Customer churn intelligence and prediction platform.</p>
+            </div>
+
+            <div class="nx-product">
+              <div class="nx-product-icon">R</div>
+              <div class="nx-product-status">PRODUCT</div>
+              <h3>Recommendation System</h3>
+              <p>Personalized recommendation and ranking platform.</p>
+            </div>
+
+            <div class="nx-product">
+              <div class="nx-product-icon">T</div>
+              <div class="nx-product-status">PROJECT</div>
+              <h3>Time Series Forecasting</h3>
+              <p>Forecasting workflows for temporal business data.</p>
+            </div>
+
+            <div class="nx-product">
+              <div class="nx-product-icon">R</div>
+              <div class="nx-product-status">PROJECT</div>
+              <h3>RAG AI Assistant</h3>
+              <p>Retrieval-augmented AI assistant for knowledge workflows.</p>
+            </div>
+
+            <div class="nx-product">
+              <div class="nx-product-icon">M</div>
+              <div class="nx-product-status">PROJECT</div>
+              <h3>MLOps Platform</h3>
+              <p>Model lifecycle, deployment and operational intelligence.</p>
+            </div>
+          </div>
+
+          <!-- Featured college project — deliberately separate -->
+          <div class="nx-college">
+            <div class="nx-college-inner">
+              <div class="nx-college-mark">N</div>
+              <div>
+                <div class="nx-college-eyebrow">FEATURED • COLLEGE PROJECT</div>
+                <h3 class="nx-college-title">
+                  Enterprise AI Decision Intelligence Program
+                </h3>
+                <p class="nx-college-desc">
+                  The academic flagship — an enterprise AI decision intelligence
+                  program bringing multiple ML capabilities into one unified
+                  ecosystem.
+                </p>
+              </div>
+              <div class="nx-college-tag">FLAGSHIP</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section class="nx-section" id="about">
+          <div class="nx-section-head">
+            <div>
+              <div class="nx-section-label">03 • ABOUT VELORA</div>
+              <h2>Built with the Nexora mindset.</h2>
+              <p class="nx-section-sub">
+                Practical tools, modular architecture, polished interfaces and
+                an ecosystem-first approach — Velora follows the same philosophy
+                as the wider Nexora portfolio.
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- FOOTER -->
+      <footer class="nx-footer">
+        <div class="nx-footer-grid">
+          <div class="nx-footer-brand">
+            <img src="/static/assets/nexora-logo.png" alt="Nexora" />
+            <p>
+              Velora is a local media utility under the Nexora ecosystem. Built
+              for focused workflows and designed to grow with the platform.
+            </p>
+            <p>Backed by <strong>TAS Communication Services</strong></p>
+          </div>
+
+          <div>
+            <h4>Quick Links</h4>
+            <a href="#home">Home</a>
+            <a href="#downloader">YT Download</a>
+            <a href="#platforms">IG Download</a>
+            <a href="#platforms">FB Download</a>
+            <a href="#about">About</a>
+          </div>
+
+          <div>
+            <h4>Other Products</h4>
+            <a href="https://fraudmatrix.vercel.app/" target="_blank"
+              >FraudMatrix</a
+            >
+            <a href="https://churnmatrix.vercel.app/" target="_blank"
+              >ChurnMatrix</a
+            >
+            <a href="#">MLOps Platform</a>
+            <a href="#">RAG AI Assistant</a>
+            <a href="#">Recommendation System</a>
+            <a href="#">Time Series Forecasting</a>
+            <a href="#" class="nx-college-link"
+              >Enterprise AI Decision Intelligence Program</a
+            >
+          </div>
+
+          <div>
+            <h4>Connect</h4>
+            <div class="nx-connect-icons">
+              <!-- GitHub -->
+              <a
+                class="nx-connect-icon"
+                href="https://github.com/annnuspeaks"
+                target="_blank"
+                rel="noopener"
+                aria-label="GitHub"
+                title="GitHub"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M12 .7a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.4-1.34-1.77-1.34-1.77-1.09-.75.08-.74.08-.74 1.2.09 1.83 1.24 1.83 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.17.77.84 1.24 1.91 1.24 3.22 0 4.62-2.81 5.64-5.49 5.94.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .7Z"
+                  />
+                </svg>
+              </a>
+
+              <!-- Email -->
+              <a
+                class="nx-connect-icon"
+                href="mailto:annu.speaks@outlook.com"
+                aria-label="Email"
+                title="Email"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.9"
+                >
+                  <rect x="3" y="5" width="18" height="14" rx="3" />
+                  <path d="m4.5 7 7.5 6 7.5-6" />
+                </svg>
+              </a>
+
+              <!-- Indeed -->
+              <a
+                class="nx-connect-icon"
+                href="https://www.indeed.com/"
+                target="_blank"
+                rel="noopener"
+                aria-label="Indeed"
+                title="Indeed"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                >
+                  <rect x="4" y="4" width="16" height="16" rx="4" />
+                  <path d="M8 16v-5m0-3v-.1M12 16v-5a2.5 2.5 0 0 1 5 0v5" />
+                </svg>
+              </a>
+
+              <!-- LinkedIn -->
+              <a
+                class="nx-connect-icon"
+                href="https://github.com/annnuspeaks"
+                target="_blank"
+                rel="noopener"
+                aria-label="LinkedIn"
+                title="LinkedIn"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M5.1 7.1A1.7 1.7 0 1 0 5.1 3.7a1.7 1.7 0 0 0 0 3.4ZM3.6 20.3h3V9h-3v11.3ZM9 9h2.9v1.55h.04c.4-.76 1.38-1.86 3.55-1.86 3.8 0 4.5 2.5 4.5 5.75v5.86h-3v-5.2c0-1.24-.02-2.84-1.73-2.84-1.73 0-2 1.35-2 2.75v5.29H9V9Z"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="nx-footer-bottom">
+          <span>© 2026 Nexora • TAS Communication Services</span>
+          <span>Crafted with ❤️ by Anurag Shukla</span>
+        </div>
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/app.js?v=20261001-2"></script>
+  </body>
+</html>
